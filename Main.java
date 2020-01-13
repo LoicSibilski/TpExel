@@ -30,8 +30,8 @@ public class Main {
 
 		sheet.writeSheet(tabCellule);
 		
-		sheet.readSheetCol(tabCellule, 1);
-		sheet.readSheetLig(tabCellule, 1);
+		//sheet.readSheetCol(tabCellule, 1);
+		//sheet.readSheetLig(tabCellule, 1);
 		sheet.readSheet(tabCellule);
 		// sheet.creerSheet();
 		// sheet.destroysheet();
