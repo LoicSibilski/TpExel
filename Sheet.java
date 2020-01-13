@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -11,6 +12,7 @@ import java.util.TreeMap;
 import javax.swing.JFileChooser;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -65,7 +67,6 @@ public class Sheet {
 			writeSheetAllCol(tabC, len);
 		else if (car == 'L')
 			writeSheetAllLig(tabC, len);
-		System.out.println(ligOrCol + " " + len + " " + car);
 
 	}
 
@@ -124,20 +125,108 @@ public class Sheet {
 		out.close();
 	}
 
-	public void readSheet() {
-		//TODO readSheet
+	public void readSheet(ArrayList<Cellule> tabC) {
+		System.out.println("READING THE ENTIRE THING POG POGCHAMP POGGERS");
+		int maxC = 0;
+		int maxL = 0;
+		int tabSize = tabC.size();
+		boolean findCell = false;
+
+		for (Cellule cell : tabC) {
+			if (cell.getCol() < cell.getLig() && cell.getLig() > maxL)
+				maxL = cell.getLig();
+			else if (cell.getCol() > cell.getLig() && cell.getCol() > maxC)
+				maxC = cell.getCol();
+		}
+
+		for (int nbLig = 0; nbLig < maxL + 2; nbLig++) {
+			for (int nbCol = 0; nbCol < maxC + 2; nbCol++) {
+				int indexCell = 0;
+				findCell = false;
+				while (indexCell < tabSize) {
+					if (tabC.get(indexCell).getCol() == nbCol && tabC.get(indexCell).getLig() == nbLig) {
+						System.out.print(tabC.get(indexCell).getContenue() + "\t");
+						findCell = true;
+						break;
+					}
+					indexCell++;
+				}
+				if (!findCell) {
+					System.out.print("*" + "\t");
+				}
+
+			}
+			System.out.println();
+		}
+		System.out.println(" ");
+
 	}
 
-	public void readSheetCol(int col) {
+	public void readSheetCol(ArrayList<Cellule> tabC, int col) {
+		System.out.println("READING THE COLLUMN NUMBER : " + col);
+
+		int maxL = 0;
+		for (Cellule cell : tabC) {
+			if (cell.getCol() < cell.getLig() && cell.getLig() > maxL)
+				maxL = cell.getLig();
+		}
+		for (int nbLig = 0; nbLig < maxL + 2; nbLig++) {
+
+			int indexCell = 0;
+			int tabSize = tabC.size();
+			boolean findCell = false;
+			while (indexCell < tabSize) {
+				if (tabC.get(indexCell).getCol() == col && tabC.get(indexCell).getLig() == nbLig) {
+					System.out.print(tabC.get(indexCell).getContenue() + "\n");
+					findCell = true;
+					break;
+				}
+				indexCell++;
+			}
+			if (!findCell)
+				System.out.print("*" + "\n");
+
+		}
+		System.out.println(" ");
 
 	}
 
-	public void readSheetLig(int lig) {
+	public void readSheetLig(ArrayList<Cellule> tabC, int lig) {
+		System.out.println("READING THE LINE NUMBER : " + lig);
+		int maxC = 0;
+		for (Cellule cell : tabC) {
+			if (cell.getCol() < cell.getLig() && cell.getLig() > maxC)
+				maxC = cell.getLig();
+		}
+		for (int nbCol = 0; nbCol < maxC + 2; nbCol++) {
+
+			int indexCell = 0;
+			int tabSize = tabC.size();
+			boolean findCell = false;
+			while (indexCell < tabSize) {
+				if (tabC.get(indexCell).getCol() == nbCol && tabC.get(indexCell).getLig() == lig) {
+					System.out.print(tabC.get(indexCell).getContenue() + "\t");
+					findCell = true;
+					break;
+				}
+				indexCell++;
+			}
+			if (!findCell)
+				System.out.print("*" + "\t");
+
+		}
+		System.out.println(" ");
 
 	}
 
-	public void readSheetCell(int col, int lig) {
-
+	public void readSheetCell(ArrayList<Cellule> tabC, int col, int lig) {
+		for (Cellule cell : tabC) {
+			if (cell.getCol() == col && cell.getLig() == lig) {
+				System.out.println(cell.getContenue());
+				break;
+			}
+		}
+		System.out.println(" ");
 	}
 
 	public void destroysheet() {
@@ -175,7 +264,6 @@ public class Sheet {
 			else if (cell.getCol() > cell.getLig() && cell.getCol() > maxC)
 				maxC = cell.getCol();
 		}
-
 		return (maxL >= maxC) ? "L" + maxL : "C" + maxC;
 
 	}
