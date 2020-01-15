@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -28,7 +29,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class FenetreMain extends JFrame {
 	JPanel container = new JPanel();
-	
+
 	private JButton boutonOuvrirFichierExel = new JButton("Ouvrir un fichier via LibreOffice");
 	private JButton boutonCreeFichierExel = new JButton("Creer un nouveau fichier exel");
 	private JButton boutonDeleteFichierExel = new JButton("Suprimer un fichier");
@@ -37,22 +38,41 @@ public class FenetreMain extends JFrame {
 	private JButton boutonStartProgiciel = new JButton("CEST PARTIS LETS GO EN AVANT LES AMIS");
 
 	JLabel label;
+	public JLabel labelChoixPattern = new JLabel();
 	private String labelBonhomme;
+	
+	
 	JTextArea jText = new JTextArea();
 
 	Sheet sheet = new Sheet("oui");
+	
 	private int sizeH = 900;
 	private int sizeW = 450;
-
+	Color color;
+	int red = 0;
+	int green = 0;
+	int blue = 0;
+	Random rand = new Random();
+	
+	
 	private boolean boolPattern;
 	private boolean boolFichier;
 	private boolean boolBoutProgicielVisible;
+	private boolean boolChoixAuto;
+	private boolean boolConfirmerChoixauto;
+	private boolean boolConfirmerPattern;
 	
+	ArrayList<Bonhomme> listeB = new ArrayList<Bonhomme>();
+
+	Bonhomme premBonhomme;
+
 	public FenetreMain() {
 		this.setTitle("PLE : Progiciel Ludiciel Exel");
 		this.setSize(sizeH, sizeW);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
+		
+		this.setBackground(Color.GREEN);
 
 		boutonCreeFichierExel.addActionListener(new BoutonListenerCreerFichier());
 		boutonOuvrirFichierExel.addActionListener(new BoutonListenerOuvrirFichier());
@@ -60,28 +80,41 @@ public class FenetreMain extends JFrame {
 		boutonChoisirFichierExel.addActionListener(new BoutonListenerWinterSpellFichier());
 		boutonPatternEmail.addActionListener(new BoutonListenerPatternMailFichier());
 		boutonStartProgiciel.addActionListener(new BoutonListenerCommencerProgiciel());
+		
+		boutonCreeFichierExel.setBackground(new Color(184,255,247));
+		boutonOuvrirFichierExel.setBackground(new Color(184,255,247));
+		boutonDeleteFichierExel.setBackground(new Color(184,255,247));
+		boutonChoisirFichierExel.setBackground(new Color(184,255,247));
+		boutonPatternEmail.setBackground(new Color(184,255,247));
+		boutonStartProgiciel.setBackground(new Color(184,255,247));
 
+		
 		label = new JLabel();
 		JPanel top = new JPanel();
 
 		JPanel bot = new JPanel();
 		JPanel middle = new JPanel();
 
+
+		
 		JPanel panelListe = new JPanel();
-		panelListe.setBackground(Color.CYAN);
+		panelListe.setSize(150, 150);
+	    panelListe.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+		panelListe.setBackground(new Color(0,255,255));
 		panelListe.setPreferredSize(new Dimension(sizeH / 2, sizeW / 2));
 		panelListe.setBorder(BorderFactory.createTitledBorder("Le fichier contient :"));
-		panelListe.setForeground(Color.RED);
-		panelListe.setLocation(sizeH, 1000);
+		//panelListe.setForeground(color = new Color( (red=rand.nextInt(255)), (green=rand.nextInt(255)), (blue=rand.nextInt(255))));
 		panelListe.add(label);
-		middle.add(panelListe);
 		
+
+		middle.add(panelListe);
+
 		bot.add(boutonPatternEmail);
 		top.add(boutonCreeFichierExel);
 		top.add(boutonOuvrirFichierExel);
 		top.add(boutonDeleteFichierExel);
 		top.add(boutonChoisirFichierExel);
-
 		top.add(middle);
 		top.add(bot);
 		top.setBackground(Color.PINK);
@@ -95,7 +128,7 @@ public class FenetreMain extends JFrame {
 			JPanel ajoutBout = new JPanel();
 			ajoutBout.add(boutonStartProgiciel);
 			this.add(ajoutBout);
-			System.out.println("DEAR OF THE EKKO");
+
 			SwingUtilities.updateComponentTreeUI(this);
 			boolBoutProgicielVisible = true;
 		}
@@ -156,12 +189,341 @@ public class FenetreMain extends JFrame {
 	public class BoutonListenerPatternMailFichier implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			
+
 			
+			JFrame jframe = new JFrame();
+			JPanel top = new JPanel();
+			JDialog cont = new JDialog(jframe, "dialog box");
+
 			
+			JButton boutonPrenomDotNom = new JButton("prenom.nom@soc");
+			JButton boutonNomDotPrenom = new JButton("nom.prenom@soc");
+			JButton boutonPDotNom = new JButton("p.nom@soc");
+			JButton boutonPNom = new JButton("pnom@soc");
+			JButton boutonPrenomNom = new JButton("prenomnom@soc");
+			JButton boutonNomPrenom = new JButton("nomprenom@soc");
+			JButton boutonNom = new JButton("nom@soc");
+			JButton boutonPrenom = new JButton("prenom@soc");
+
+			boutonPrenomDotNom.addActionListener(new BoutonListenerPrenomDotNom());
+			boutonNomDotPrenom.addActionListener(new BoutonListenerNomDotPrenom());
+			boutonPDotNom.addActionListener(new BoutonListenerPDotNom());
+			boutonPNom.addActionListener(new BoutonListenerPNom());
+			boutonPrenomNom.addActionListener(new BoutonListenerPrenomNom());
+			boutonNomPrenom.addActionListener(new BoutonListenerNomPrenom());
+			boutonNom.addActionListener(new BoutonListenerNom());
+			boutonPrenom.addActionListener(new BoutonListenerPrenom());
+
+			//boutonPrenomDotNom.setBackground(color = new Color( (red=rand.nextInt(255)), (green=rand.nextInt(255)), (blue=rand.nextInt(255)) ));
+			boutonPrenomDotNom.setBackground(new Color(184,255,247));
+			boutonNomDotPrenom.setBackground(new Color(184,255,247));
+			boutonPDotNom.setBackground(new Color(184,255,247));
+			boutonPNom.setBackground(new Color(184,255,247));
+			boutonPrenomNom.setBackground(new Color(184,255,247));
+			boutonNomPrenom.setBackground(new Color(184,255,247));
+			boutonNom.setBackground(new Color(184,255,247));
+			boutonPrenom.setBackground(new Color(184,255,247));
 			
+			cont.setTitle("CHOOE THE NAME");
+			cont.setSize(600, 200);
+			cont.setLocationRelativeTo(null);
+
+
+			top.setBackground(new Color(1,255,144));
 			
-			boolPattern = true;
-			ajoutBoutonCommencerProgiciel();
+			top.add(boutonPrenomDotNom);
+			top.add(boutonNomDotPrenom);
+			top.add(boutonPDotNom);
+			top.add(boutonPNom);
+			top.add(boutonPrenomNom);
+			top.add(boutonNomPrenom);
+			top.add(boutonNom);
+			top.add(boutonPrenom);
+			top.add(labelChoixPattern);
+			
+			cont.add(top);
+			cont.setVisible(true);
+
+		}
+
+		public class BoutonListenerPrenomDotNom implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (boolFichier) {
+					
+					String stringLabelChoixPattern = new String();
+
+					stringLabelChoixPattern="<html><p>";
+					stringLabelChoixPattern+=listeB.get(0).prenomDotNom().concat(".com");
+					labelChoixPattern.setText(stringLabelChoixPattern);
+					
+					
+					boolPattern = true;
+					ajoutBoutonCommencerProgiciel();
+					
+				} 
+				else {
+					JFrame jframe = new JFrame();
+					JDialog cont = new JDialog(jframe, "dialog box");
+					JPanel top = new JPanel();
+					JLabel labelErrorPattern = new JLabel();
+					cont.setTitle("ERROR RED ALERT AUTODESTRUCTION IN 5 ...");
+					cont.setSize(400, 100);
+					cont.setLocationRelativeTo(null);
+					
+					labelErrorPattern.setText("Veuillez d'abord choisir un fichier");
+					top.add(labelErrorPattern);
+					cont.add(top);
+					cont.setVisible(true);
+					System.out.println(boolFichier);
+
+				}
+
+			}
+		}
+
+		public class BoutonListenerNomDotPrenom implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (boolFichier) {
+					
+					String stringLabelChoixPattern = new String();
+
+					stringLabelChoixPattern="<html><p>";
+					stringLabelChoixPattern+=listeB.get(0).nomDotPrenom().concat(".com");
+					labelChoixPattern.setText(stringLabelChoixPattern);
+					
+					
+					boolPattern = true;
+					ajoutBoutonCommencerProgiciel();
+					
+				} 
+				else {
+					JFrame jframe = new JFrame();
+					JDialog cont = new JDialog(jframe, "dialog box");
+					JPanel top = new JPanel();
+					JLabel labelErrorPattern = new JLabel();
+					cont.setTitle("ERROR RED ALERT AUTODESTRUCTION IN 5 ...");
+					cont.setSize(400, 100);
+					cont.setLocationRelativeTo(null);
+					
+					labelErrorPattern.setText("Veuillez d'abord choisir un fichier");
+					top.add(labelErrorPattern);
+					cont.add(top);
+					cont.setVisible(true);
+					System.out.println(boolFichier);
+
+				}
+
+			}
+		}
+
+		public class BoutonListenerPDotNom implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (boolFichier) {
+					
+					String stringLabelChoixPattern = new String();
+
+					stringLabelChoixPattern="<html><p>";
+					stringLabelChoixPattern+=listeB.get(0).pDotNom().concat(".com");
+					labelChoixPattern.setText(stringLabelChoixPattern);
+					
+					
+					boolPattern = true;
+					ajoutBoutonCommencerProgiciel();
+					
+				} 
+				else {
+					JFrame jframe = new JFrame();
+					JDialog cont = new JDialog(jframe, "dialog box");
+					JPanel top = new JPanel();
+					JLabel labelErrorPattern = new JLabel();
+					cont.setTitle("ERROR RED ALERT AUTODESTRUCTION IN 5 ...");
+					cont.setSize(400, 100);
+					cont.setLocationRelativeTo(null);
+					
+					labelErrorPattern.setText("Veuillez d'abord choisir un fichier");
+					top.add(labelErrorPattern);
+					cont.add(top);
+					cont.setVisible(true);
+					System.out.println(boolFichier);
+
+				}
+
+			}
+		}
+
+		public class BoutonListenerPNom implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (boolFichier) {
+					
+					String stringLabelChoixPattern = new String();
+
+					stringLabelChoixPattern="<html><p>";
+					stringLabelChoixPattern+=listeB.get(0).pNom().concat(".com");
+					labelChoixPattern.setText(stringLabelChoixPattern);
+					
+					
+					boolPattern = true;
+					ajoutBoutonCommencerProgiciel();
+					
+				} 
+				else {
+					JFrame jframe = new JFrame();
+					JDialog cont = new JDialog(jframe, "dialog box");
+					JPanel top = new JPanel();
+					JLabel labelErrorPattern = new JLabel();
+					cont.setTitle("ERROR RED ALERT AUTODESTRUCTION IN 5 ...");
+					cont.setSize(400, 100);
+					cont.setLocationRelativeTo(null);
+					
+					labelErrorPattern.setText("Veuillez d'abord choisir un fichier");
+					top.add(labelErrorPattern);
+					cont.add(top);
+					cont.setVisible(true);
+					System.out.println(boolFichier);
+
+				}
+
+			}
+		}
+
+		public class BoutonListenerPrenomNom implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (boolFichier) {
+					
+					String stringLabelChoixPattern = new String();
+
+					stringLabelChoixPattern="<html><p>";
+					stringLabelChoixPattern+=listeB.get(0).prenomNom().concat(".com");
+					labelChoixPattern.setText(stringLabelChoixPattern);
+					
+					
+					boolPattern = true;
+					ajoutBoutonCommencerProgiciel();
+					
+				} 
+				else {
+					JFrame jframe = new JFrame();
+					JDialog cont = new JDialog(jframe, "dialog box");
+					JPanel top = new JPanel();
+					JLabel labelErrorPattern = new JLabel();
+					cont.setTitle("ERROR RED ALERT AUTODESTRUCTION IN 5 ...");
+					cont.setSize(400, 100);
+					cont.setLocationRelativeTo(null);
+					
+					labelErrorPattern.setText("Veuillez d'abord choisir un fichier");
+					top.add(labelErrorPattern);
+					cont.add(top);
+					cont.setVisible(true);
+					System.out.println(boolFichier);
+
+				}
+
+			}
+		}
+
+		public class BoutonListenerNomPrenom implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (boolFichier) {
+					
+					String stringLabelChoixPattern = new String();
+
+					stringLabelChoixPattern="<html><p>";
+					stringLabelChoixPattern+=listeB.get(0).nomPrenom().concat(".com");
+					labelChoixPattern.setText(stringLabelChoixPattern);
+					
+					
+					boolPattern = true;
+					ajoutBoutonCommencerProgiciel();
+					
+				} 
+				else {
+					JFrame jframe = new JFrame();
+					JDialog cont = new JDialog(jframe, "dialog box");
+					JPanel top = new JPanel();
+					JLabel labelErrorPattern = new JLabel();
+					cont.setTitle("ERROR RED ALERT AUTODESTRUCTION IN 5 ...");
+					cont.setSize(400, 100);
+					cont.setLocationRelativeTo(null);
+					
+					labelErrorPattern.setText("Veuillez d'abord choisir un fichier");
+					top.add(labelErrorPattern);
+					cont.add(top);
+					cont.setVisible(true);
+					System.out.println(boolFichier);
+
+				}
+
+			}
+		}
+
+		public class BoutonListenerNom implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (boolFichier) {
+					
+					String stringLabelChoixPattern = new String();
+
+					stringLabelChoixPattern="<html><p>";
+					stringLabelChoixPattern+=listeB.get(0).nom().concat(".com");
+					labelChoixPattern.setText(stringLabelChoixPattern);
+					
+					
+					boolPattern = true;
+					ajoutBoutonCommencerProgiciel();
+					
+				} 
+				else {
+					JFrame jframe = new JFrame();
+					JDialog cont = new JDialog(jframe, "dialog box");
+					JPanel top = new JPanel();
+					JLabel labelErrorPattern = new JLabel();
+					cont.setTitle("ERROR RED ALERT AUTODESTRUCTION IN 5 ...");
+					cont.setSize(400, 100);
+					cont.setLocationRelativeTo(null);
+					
+					labelErrorPattern.setText("Veuillez d'abord choisir un fichier");
+					top.add(labelErrorPattern);
+					cont.add(top);
+					cont.setVisible(true);
+					System.out.println(boolFichier);
+
+				}
+
+			}
+		}
+
+		public class BoutonListenerPrenom implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				if (boolFichier) {
+					
+					String stringLabelChoixPattern = new String();
+
+					stringLabelChoixPattern="<html><p>";
+					stringLabelChoixPattern+=listeB.get(0).prenom().concat(".com");
+					labelChoixPattern.setText(stringLabelChoixPattern);
+					
+					
+					boolPattern = true;
+					ajoutBoutonCommencerProgiciel();
+					
+				} 
+				else {
+					JFrame jframe = new JFrame();
+					JDialog cont = new JDialog(jframe, "dialog box");
+					JPanel top = new JPanel();
+					JLabel labelErrorPattern = new JLabel();
+					cont.setTitle("ERROR RED ALERT AUTODESTRUCTION IN 5 ...");
+					cont.setSize(400, 100);
+					cont.setLocationRelativeTo(null);
+					
+					labelErrorPattern.setText("Veuillez d'abord choisir un fichier");
+					top.add(labelErrorPattern);
+					cont.add(top);
+					cont.setVisible(true);
+					System.out.println(boolFichier);
+
+				}
+
+			}
 		}
 	}
 
@@ -195,7 +557,6 @@ public class FenetreMain extends JFrame {
 						FileInputStream fis = new FileInputStream(file);
 						XSSFRow row;
 						XSSFSheet sheetBouton = new XSSFWorkbook(fis).getSheetAt(0);
-						ArrayList<Bonhomme> listeB = new ArrayList<Bonhomme>();
 						Iterator<Row> rowIterator = sheetBouton.iterator();
 
 						while (rowIterator.hasNext()) {
