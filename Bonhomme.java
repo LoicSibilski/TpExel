@@ -24,16 +24,6 @@ public class Bonhomme {
 		return prenom;
 	}
 	
-	/*
-	 * prenom.nom@societe.com
-    nom.prenom@societe.com
-    p.nom@societe.com
-    pnom@societe.com
-    prenomnom@societe.com
-    nomprenom@societe.com
-    nom@societe.com
-    prenom@societe.com
-	 */
 	
 	
 	/*
