@@ -19,10 +19,20 @@ public class Sheet {
 	XSSFWorkbook workbook = new XSSFWorkbook();
 	XSSFSheet spreadsheet = workbook.createSheet(" Employee Info ");
 
+	String sheetPath = new String();
+	
 	public Sheet(String nom) {
 		this.nom = nom;
 	}
 
+	public String getSheetPath() {
+		return this.sheetPath;
+	}
+	
+	public XSSFWorkbook getWorkbook() {
+		return this.workbook;
+	}
+	
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
@@ -77,10 +87,12 @@ public class Sheet {
 		fcDir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			FileOutputStream out = new FileOutputStream(new File(this.nom.concat(".xlsx")));
+			File file = new File(this.nom.concat(".xlsx"));
+			FileOutputStream out = new FileOutputStream(file);
 			workbook.write(out);
 			out.close();
 			System.out.println("Vous avez creer le nouveau fichier exel : " + nom);
+			this.sheetPath = file.getAbsolutePath();
 		}
 	}
 
